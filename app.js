@@ -6,6 +6,7 @@ const mongoose = require('mongoose')
 mongoose.connect('mongodb://localhost/todo-list')
 // 取得資料庫連線狀態
 const db = mongoose.connection
+const Todo = require('./models/todo')
 
 const exphbs = require('express-handlebars')
 
@@ -23,7 +24,13 @@ db.once('open', () => {
 })
 
 app.get('/', (req, res) => {
-  res.render('index')
+  Todo.find()
+    .lean()
+    .then(todos => {
+      console.log(todos)
+      res.render('index', { todos })
+    })
+    .catch(error => console.log(error))
 })
 
 app.listen(port, () => {
