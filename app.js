@@ -28,10 +28,7 @@ app.use(express.urlencoded({ extended: true }))
 app.get('/', (req, res) => {
   Todo.find()
     .lean()
-    .then(todos => {
-      console.log(todos)
-      res.render('index', { todos })
-    })
+    .then(todos => res.render('index', { todos }))
     .catch(error => console.log(error))
 })
 
@@ -44,6 +41,15 @@ app.post('/todos', (req, res) => {
   
   return Todo.create({ name })
     .then(() => res.redirect('/'))
+    .catch(error => console.log(error))
+})
+
+app.get('/todos/:id', (req, res) => {
+  const id = req.params.id
+
+  return Todo.findById(id)
+    .lean()
+    .then(todo => res.render('details', { todo }))
     .catch(error => console.log(error))
 })
 
