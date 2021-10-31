@@ -9,6 +9,7 @@ const db = mongoose.connection
 const Todo = require('./models/todo')
 
 const exphbs = require('express-handlebars')
+const methodOverride = require('method-override')
 
 // 連線異常
 db.on('error', () => {
@@ -24,6 +25,7 @@ app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' }))
 app.set('view engine', 'hbs')
 
 app.use(express.urlencoded({ extended: true }))
+app.use(methodOverride('_method'))
 
 app.get('/', (req, res) => {
   Todo.find()
@@ -63,7 +65,7 @@ app.get('/todos/:id/edit', (req, res) => {
     .catch(error => console.log(error))
 })
 
-app.post('/todos/:id/edit', (req, res) => {
+app.put('/todos/:id', (req, res) => {
   const id = req.params.id
   const { name, isDone } = req.body
 
@@ -77,7 +79,7 @@ app.post('/todos/:id/edit', (req, res) => {
     .catch(error => console.log(error))
 })
 
-app.post('/todos/:id/delete', (req, res) => {
+app.delete('/todos/:id', (req, res) => {
   const id = req.params.id
 
   return Todo.findById(id)
